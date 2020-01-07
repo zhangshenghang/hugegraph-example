@@ -1,0 +1,12 @@
+HugeGraph的EdgeId是由srcVertexId+edgeLabel+sortKey+tgtVertexId四部分组合而成。其中sortKey是HugeGraph的一个重要概念。 
+在Edge中加入sortKey作为Edge的唯一标识的原因有两个：
+
+如果两个顶点之间存在多条相同Label的边可通过sortKey来区分
+对于SuperNode的节点，可以通过sortKey来排序截断。
+由于EdgeId是由srcVertexId+edgeLabel+sortKey+tgtVertexId四部分组合，多次插入相同的Edge时HugeGraph会自动覆盖以实现去重。
+ 需要注意的是如果批量插入模式下Edge的属性也将会覆盖。
+
+另外由于HugeGraph的EdgeId采用自动去重策略，对于self-loop（一个顶点存在一条指向自身的边）的情况下HugeGraph认为仅有一条边，
+对于采用AUTOMATIC策略的图数据库（例如TitianDB ）则会认为该图存在两条边。
+
+HugeGraph的边仅支持有向边，无向边可以创建Out和In两条边来实现。

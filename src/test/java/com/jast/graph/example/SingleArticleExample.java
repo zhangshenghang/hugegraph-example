@@ -1,15 +1,10 @@
 package com.jast.graph.example;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.baidu.hugegraph.driver.GraphManager;
-import com.baidu.hugegraph.driver.GremlinManager;
-import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.driver.SchemaManager;
 import com.baidu.hugegraph.structure.constant.T;
 import com.baidu.hugegraph.structure.graph.Edge;
 import com.baidu.hugegraph.structure.graph.Path;
@@ -20,14 +15,21 @@ import com.baidu.hugegraph.structure.gremlin.ResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SingleArticleExample {
-	static HugeClient hugeClient = new HugeClient("http://192.168.2.116:8080", "hugegraph");
-	static GraphManager graph = hugeClient.graph();
-	static GremlinManager gremlin = hugeClient.gremlin();
-	static SchemaManager schema = hugeClient.schema();
-	public static void main(String[] args) throws IOException {
-		// If connect failed will throw a exception.
-
+public class SingleArticleExample extends HugeGraphClient{
+	
+	/**
+	 * TODO 多个图创建
+	 * TODO 关系推断
+	 * TODO hbase结合
+	 * TODO 分布式部署
+	 */
+	
+	/**
+	 * 数据添加demo 
+	 * @return void
+	 */
+	@Test
+	public void singleExample() {
 		schema.propertyKey("name").asText().ifNotExist().create();
 		schema.propertyKey("uid").asLong().ifNotExist().create();
 		schema.propertyKey("city").asText().ifNotExist().create();
@@ -62,9 +64,6 @@ public class SingleArticleExample {
 		.secondary()
 		.ifNotExist()
 		.create();
-
-
-
 
 		Vertex article1 = graph.addVertex(T.label, "article", "mid", "6177764748mid", "name", "语文星光", "uid", 6177764748l,"city","未知","url","https://weibo.com/6177764748/Io73xCtrF");
 		Vertex article2 = graph.addVertex(T.label, "article", "mid", "6430029562", "name", "ling001972", "uid", 6430029562l,"city","未知","url","https://weibo.com/6430029562/IodTtA4ZT");
@@ -107,29 +106,40 @@ public class SingleArticleExample {
 				System.out.println(object);
 			}
 		});
-
-		//		//遍历边id
-		//		graph.listEdges().forEach(x->graph.removeEdge(x.id()));
-		//		//遍历顶点id
-		//		graph.listVertices().forEach(x->graph.removeVertex(x.id()));
-		//
-		//
-		//
-		//		//删除顶点
-		//		graph.removeVertex("1:日长k叫门伟_");
-		//		//删除边
-		//		graph.removeEdge("S1:ling001972>1>>S1:语文星光");
-		//		//遍历边id
-		//		graph.listEdges().forEach(x->System.out.println(x.id()));
-		//		//遍历顶点id
-		//		graph.listVertices().forEach(x->System.out.println(x.id()));
-
 	}
+	
 	/**
-	 * TODO 1.多个图创建
-	 * TODO 2.
+	 * 删除属性变量，全部删除需要按照顺序先删除边，再删除点
+	 * @return void
 	 */
-
+	@Test
+	public void delete() {
+		schema.getIndexLabels().forEach(x->schema.removeIndexLabel(x.name()));
+		schema.getEdgeLabels().forEach(x->schema.removeEdgeLabel(x.name()));
+		schema.getVertexLabels().forEach(x->schema.removeVertexLabel(x.name()));
+		schema.getPropertyKeys().forEach(x->schema.removePropertyKey(x.name()));
+	}
+	
+	/**
+	 * 删除数据
+	 * @return void
+	 */
+	@Test
+	public void deleteData() {
+		//遍历边id
+		graph.listEdges().forEach(x->graph.removeEdge(x.id()));
+		//遍历顶点id
+		graph.listVertices().forEach(x->graph.removeVertex(x.id()));
+		//删除顶点
+		graph.removeVertex("1:日长k叫门伟_");
+		//删除边
+		graph.removeEdge("S1:ling001972>1>>S1:语文星光");
+		//遍历边id
+		graph.listEdges().forEach(x->System.out.println(x.id()));
+		//遍历顶点id
+		graph.listVertices().forEach(x->System.out.println(x.id()));
+	}
+	
 	/**
 	 * 顶点、边的遍历操作
 	 */
@@ -198,7 +208,6 @@ public class SingleArticleExample {
 		Printer.printList(resultSet.data());
 		System.out.println("\n");
 	}
-
 
 	/**
 	 * 创建顶点，然后 判断顶点是否存在，如果存在则创建边，如果不存在不作处理
