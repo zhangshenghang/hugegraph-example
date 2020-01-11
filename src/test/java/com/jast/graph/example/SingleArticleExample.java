@@ -22,6 +22,7 @@ public class SingleArticleExample extends HugeGraphClient{
 	 * TODO 关系推断
 	 * TODO hbase结合
 	 * TODO 分布式部署
+	 * TODO 采集转发微博，ljs，数据提供
 	 */
 	
 	/**
@@ -106,6 +107,20 @@ public class SingleArticleExample extends HugeGraphClient{
 				System.out.println(object);
 			}
 		});
+	}
+	
+	/**
+	 * 查询顶点相关路径,遍历顶点近4层的数据
+	 * @return void
+	 */
+	@Test
+	public void queryPath() {
+		String id = "7:不冫令";
+		ResultSet resultSet =  gremlin.gremlin("g.V().hasId(\""+id+"\").both().both().both().bothE().dedup()").execute();
+		Printer.printList(resultSet.data());
+		
+//		resultSet =  gremlin.gremlin("g.V().hasId(\""+id+"\").both().both().both().bothE().path()").execute();
+//		Printer.printList(resultSet.data());
 	}
 	
 	/**

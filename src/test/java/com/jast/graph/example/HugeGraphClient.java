@@ -7,7 +7,7 @@ import com.baidu.hugegraph.driver.SchemaManager;
 
 public class HugeGraphClient {
 
-	static HugeClient hugeClient = new HugeClient("http://192.168.2.116:8080", "hugegraph");
+	static HugeClient hugeClient = new HugeClient("http://192.168.2.116:8080", "hugegraph1");
 	static GraphManager graph = hugeClient.graph();
 	static GremlinManager gremlin = hugeClient.gremlin();
 	static SchemaManager schema = hugeClient.schema();
